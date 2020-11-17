@@ -15,16 +15,15 @@ This project uses the following ABCD instruments [version 3.0]:
 
 How to run the code:
 
-(@) update the config.R to reflect the location of the instruments above 
-(@) In the scripts folder, run the following scripts in any order:
-
-    a. suicide_clean.R
-    b. ksad_externalizing_symptoms.R
-    c. demographics_clean.R
-    d. medication_clean.R
-    e. exposome_clean
-    f. psychopathology_clean.R
+1. update the config.R to reflect the location of the instruments above 
+2. In the scripts folder, run the following scripts in any order:
+    1) suicide_clean.R
+    2) ksad_externalizing_symptoms.R
+    3) demographics_clean.R
+    4) medication_clean.R
+    5) exposome_clean
+    6) psychopathology_clean.R
     
     These scripts go over the abcd instruments and create new variables and datasets that are placed in the “outputs” folder.
-
-(@) Run merge_adhd.R script. This script merges all the datasets that were created in 4 and adds some more adhd variables.  
+    
+3. Run merge_adhd.R script. This script merges all the datasets that were created in 4 and adds some more adhd variables.  
