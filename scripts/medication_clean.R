@@ -94,7 +94,7 @@ setdiff(all_meds$med[all_meds$baseline == 1], tagged_med$med_number) #3 otc meds
 
 
 #add medication category to each child according to tagging
-for(i in 2:13){
+for(i in 2:8){
   
   #get med category
   colname = colnames(tagged_med)[i]
@@ -113,7 +113,7 @@ for(i in 2:13){
 
 
 #fix the tagging for parents that refused to answer (brought_medications == 2) or NA
-med_dataset[(med_dataset$brought_medications %in% c(2,NA)),colnames(tagged_med)[2:13]] = NA
+med_dataset[(med_dataset$brought_medications %in% c(2,NA)),colnames(tagged_med)[2:8]] = NA
 
 med_dataset = med_dataset[med_dataset$eventname == "baseline_year_1_arm_1",]
 
@@ -121,8 +121,5 @@ med_dataset = med_dataset[med_dataset$eventname == "baseline_year_1_arm_1",]
 med_dataset = med_dataset[!sapply(med_dataset, function(x) all((x=="NA")|(is.na(x))))]
 
 write.csv(file = paste0("outputs/meds_tagged.csv"),x = med_dataset ,row.names=F, na = "")
-
-
-
 
 

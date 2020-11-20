@@ -24,15 +24,15 @@ srpf01$positive_school_involvement = apply(srpf01[,grepl("(4|6|7)", colnames(srp
 
 
 ###Family Environment Scale: Family Conflict Subscale
-sscep01 = read.csv(file = paste0(exposome_files_path,"abcd_sscep01.txt"), sep = '\t',header = TRUE, row.names=NULL, check.names=FALSE, na.string = c("","NA"))
+sscey01 = read.csv(file = paste0(exposome_files_path,"abcd_sscey01.txt"), sep = '\t',header = TRUE, row.names=NULL, check.names=FALSE, na.string = c("","NA"))
 
 #remove details line
-sscep01 = sscep01[-1,]
+sscey01 = sscey01[-1,]
 
-sscep01 = sscep01[sscep01$eventname == "baseline_year_1_arm_1", grepl("(src|interview|event|sex)|(fes_p_ss_fc)$", colnames(sscep01))]
+sscey01 = sscey01[sscey01$eventname == "baseline_year_1_arm_1", grepl("(src|interview|event|sex)|(fes_y_ss_fc)$", colnames(sscey01))]
 
-sscep01 = droplevels(sscep01)
-table(sscep01$fes_p_ss_fc)
+sscey01 = droplevels(sscey01)
+table(sscey01$fes_y_ss_fc)
 
 
 
@@ -65,9 +65,9 @@ ssmty = droplevels(ssmty)
 table(ssmty$stq_y_ss_weekend)
 
 
-### merge all 4 tables
+### merge all tables
 
-exposome_set = merge(srpf01,sscep01)
+exposome_set = merge(srpf01,sscey01)
 exposome_set = merge(exposome_set,pmq01)
 exposome_set = merge(exposome_set,ssmty)
 

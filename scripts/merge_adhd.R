@@ -49,7 +49,7 @@ adhd_dataset_sui = adhd_dataset_sui[,!(colnames(adhd_dataset_sui) %in% c("sex", 
 write.csv(file = "outputs/adhd_dataset_sui_all_features.csv",x = adhd_dataset_sui,row.names=F, na = "")
 
 #select ADHD first model features
-adhd_sub_set = adhd_dataset_sui[,(grepl("^(src|inter|brought|mph|amp|alpha|ato|ssri|other|an|SI|SA|sui|race|demo|ethnicity|household|age|sex|gender|parents|cbcl)|(_symptoms_sum)|Diagnosis|positive_school_involvement|fes_p_ss_fc|parent_monitor_mea|stq_y_ss_weekend", colnames(adhd_dataset_sui), ignore.case = T))]
+adhd_sub_set = adhd_dataset_sui[,(grepl("^(src|inter|brought|mph|amp|alpha|ato|ssri|other|an|SI|SA|sui|race|demo|ethnicity|household|age|sex|gender|parents|cbcl)|(_symptoms_sum)|Diagnosis|positive_school_involvement|fes_y_ss_fc|parent_monitor_mea|stq_y_ss_weekend", colnames(adhd_dataset_sui), ignore.case = T))]
 
 write.csv(file = "outputs/adhd_dataset_sui.csv",x = adhd_sub_set,row.names=F, na = "")
 
