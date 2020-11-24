@@ -49,7 +49,28 @@ adhd_dataset_sui = adhd_dataset_sui[,!(colnames(adhd_dataset_sui) %in% c("sex", 
 write.csv(file = "outputs/adhd_dataset_sui_all_features.csv",x = adhd_dataset_sui,row.names=F, na = "")
 
 #select ADHD first model features
-adhd_sub_set = adhd_dataset_sui[,(grepl("^(src|inter|brought|mph|amp|alpha|ato|ssri|other|an|SI|SA|sui|race|demo|ethnicity|household|age|sex|gender|parents|cbcl)|(_symptoms_sum)|Diagnosis|positive_school_involvement|fes_y_ss_fc|parent_monitor_mea|stq_y_ss_weekend", colnames(adhd_dataset_sui), ignore.case = T))]
+adhd_sub_set = adhd_dataset_sui[,(grepl("^(src|inter|brought|mph|amp|alpha|ato|ssri|other|an|SI|SA|sui|race|demo|ethnicity|household|age|sex|gender|parents|rel_fami)|(_symptoms_sum)|Diagnosis|positive_school_involvement|fes_y_ss_fc|parent_monitor_mea|stq_y_ss_weekend", colnames(adhd_dataset_sui), ignore.case = T))]
 
 write.csv(file = "outputs/adhd_dataset_sui.csv",x = adhd_sub_set,row.names=F, na = "")
+
+
+
+#remove rows with missing data only in the colunms that are part of the main analysis
+adhd_sub_set_clean = adhd_sub_set[complete.cases(adhd_sub_set[,c("sex_br","age","race_white","race_black","ethnicity_hisp", "parents_avg_edu",
+                                                    "any_adhd_med", "any_depression_psychotic_meds",
+                                                    "ksads_externalizing_exclude_attentation_symptoms_sum",
+                                                    "suicidality_y")]),]
+
+
+#select one participant from each familay 
+adhd_sub_set_clean = do.call(rbind, 
+                             lapply(split(adhd_sub_set_clean,adhd_sub_set_clean$rel_family_id),
+                                    function(x){x[sample(nrow(x),1),]}))
+
+write.csv(file = "outputs/adhd_dataset_sui_family.csv",x = adhd_sub_set_clean, row.names=F, na = "")
+
+
+
+
+
 

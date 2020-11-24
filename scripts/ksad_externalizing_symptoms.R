@@ -32,13 +32,8 @@ externalize_ksad_y = ksad_y[,which(grepl("^(src|inter|event|sex|ksads_([1-3]|8|1
 
 #ADHD
 #for each pair, create one variable to represent the adhd symptoms 
-pairs_items = c(76 , 78)
-pairs_items = rbind(pairs_items, c(77 , 79))
-pairs_items = rbind(pairs_items, c(80 , 82))
-pairs_items = rbind(pairs_items, c(81 , 83))
-pairs_items = rbind(pairs_items, c(84 , 86))
-pairs_items = rbind(pairs_items, c(85 , 87))
-pairs_items = rbind(pairs_items, c(394 , 410))
+
+pairs_items = c(394 , 410)
 pairs_items = rbind(pairs_items, c(395 , 411))
 pairs_items = rbind(pairs_items, c(396 , 412))
 pairs_items = rbind(pairs_items, c(397 , 413))
@@ -56,7 +51,7 @@ pairs_items = rbind(pairs_items, c(408 , 424))
 pairs_items = rbind(pairs_items, c(409 , 425))
 
 
-for(i in 1:22){
+for(i in 1:dim(pairs_items)[1]){
   new_col_name = paste0("temp_adhd_",i)
   e_1 = paste0("ksads_14_",pairs_items[i,1],"_p")
   e_2 = paste0("ksads_14_",pairs_items[i,2],"_p") 
@@ -66,22 +61,34 @@ for(i in 1:22){
                                               0, externalize_ksad_p[,new_col_name])
   print(summary(externalize_ksad_p[,c(new_col_name, e_1 , e_2)]))
 }
-#add the tri
-externalize_ksad_p$temp_adhd_23 = (externalize_ksad_p$ksads_14_88_p == 1 | externalize_ksad_p$ksads_14_89_p == 1 |externalize_ksad_p$ksads_14_90_p == 1) *1
-summary(externalize_ksad_p[,c("temp_adhd_23", "ksads_14_88_p", "ksads_14_89_p", "ksads_14_90_p")])
+#add "sustaining attention" symptom
+externalize_ksad_p$temp_adhd_17 = apply(externalize_ksad_p[,grepl("ksads_14_(7[6-9])_p", colnames(externalize_ksad_p))],1 ,function(x) {any(x == 1)*1})
+summary(externalize_ksad_p[,grepl("temp_adhd_17|ksads_14_(7[6-9])_p", colnames(externalize_ksad_p))])
+
+#add "Easily distracted" symptom
+externalize_ksad_p$temp_adhd_18 = apply(externalize_ksad_p[,grepl("ksads_14_(8[0-3])_p", colnames(externalize_ksad_p))],1 ,function(x) {any(x == 1)*1})
+summary(externalize_ksad_p[,grepl("temp_adhd_18|ksads_14_(8[0-3])_p", colnames(externalize_ksad_p))])
+
+#add "Difficulty remaining seated" symptom
+externalize_ksad_p$temp_adhd_19 = apply(externalize_ksad_p[,grepl("ksads_14_(8[4-7])_p", colnames(externalize_ksad_p))],1 ,function(x) {any(x == 1)*1})
+externalize_ksad_p$temp_adhd_19 = ifelse( ( is.na(externalize_ksad_p$temp_adhd_19) & (apply(externalize_ksad_p[,grepl("ksads_14_(8[4-7])_p", colnames(externalize_ksad_p))],1 ,function(x) {any(x == 0)})) ),
+                                          0, externalize_ksad_p$temp_adhd_19)
+summary(externalize_ksad_p[,grepl("temp_adhd_19|ksads_14_(8[4-7])_p", colnames(externalize_ksad_p))])
+
+#add "Impulsivity" symptom
+externalize_ksad_p$temp_adhd_20 = (externalize_ksad_p$ksads_14_88_p == 1 | externalize_ksad_p$ksads_14_89_p == 1 |externalize_ksad_p$ksads_14_90_p == 1) *1
+summary(externalize_ksad_p[,c("temp_adhd_20", "ksads_14_88_p", "ksads_14_89_p", "ksads_14_90_p")])
+
 
 #create summary for adhd symptoms 
 externalize_ksad_p$ksads_ADHD_symptoms_sum = rowSums(externalize_ksad_p[,which(grepl("temp_adhd_", colnames(externalize_ksad_p)))], na.rm = T)
 #fix rows with all NA (rowSums gave a number to all rows)
-externalize_ksad_p$ksads_ADHD_symptoms_sum[rowSums(is.na(externalize_ksad_p[,which(grepl("temp_adhd_", colnames(externalize_ksad_p), ignore.case=TRUE))])) == 23] = NA
-# View(adhd_ksad_p[is.na(adhd_ksad_p$ksads_14_83_p),which(grepl("adhd", colnames(adhd_ksad_p), ignore.case=TRUE))])
+externalize_ksad_p$ksads_ADHD_symptoms_sum[rowSums(is.na(externalize_ksad_p[,which(grepl("temp_adhd_", colnames(externalize_ksad_p), ignore.case=TRUE))])) == 20] = NA
 
 
 #ADHD exclude attention
 #for each pair, create one variable to represent the adhd symptoms excluding attention
-pairs_items = c(84 , 86)
-pairs_items = rbind(pairs_items, c(85 , 87))
-pairs_items = rbind(pairs_items, c(401 , 417))
+pairs_items = c(401 , 417)
 pairs_items = rbind(pairs_items, c(402 , 418))
 pairs_items = rbind(pairs_items, c(403 , 419))
 pairs_items = rbind(pairs_items, c(404 , 420))
@@ -91,7 +98,7 @@ pairs_items = rbind(pairs_items, c(407 , 423))
 pairs_items = rbind(pairs_items, c(408 , 424))
 
 
-for(i in 1:10){
+for(i in 1:dim(pairs_items)[1]){
   new_col_name = paste0("temp_adhd_ex_",i)
   e_1 = paste0("ksads_14_",pairs_items[i,1],"_p")
   e_2 = paste0("ksads_14_",pairs_items[i,2],"_p") 
@@ -101,14 +108,21 @@ for(i in 1:10){
                                               0, externalize_ksad_p[,new_col_name])
   print(summary(externalize_ksad_p[,c(new_col_name, e_1 , e_2)]))
 }
-#add the tri
-externalize_ksad_p$temp_adhd_ex_11 = (externalize_ksad_p$ksads_14_88_p == 1 | externalize_ksad_p$ksads_14_89_p == 1 |externalize_ksad_p$ksads_14_90_p == 1) *1
-summary(externalize_ksad_p[,c("temp_adhd_ex_11", "ksads_14_88_p", "ksads_14_89_p", "ksads_14_90_p")])
+
+#add "Difficulty remaining seated" symptom
+externalize_ksad_p$temp_adhd_ex_9 = apply(externalize_ksad_p[,grepl("ksads_14_(8[4-7])_p", colnames(externalize_ksad_p))],1 ,function(x) {any(x == 1)*1})
+externalize_ksad_p$temp_adhd_ex_9 = ifelse( ( is.na(externalize_ksad_p$temp_adhd_ex_9) & (apply(externalize_ksad_p[,grepl("ksads_14_(8[4-7])_p", colnames(externalize_ksad_p))],1 ,function(x) {any(x == 0)})) ),
+                                          0, externalize_ksad_p$temp_adhd_ex_9)
+summary(externalize_ksad_p[,grepl("temp_adhd_ex_9|ksads_14_(8[4-7])_p", colnames(externalize_ksad_p))])
+
+#add "Impulsivity" symptom
+externalize_ksad_p$temp_adhd_ex_10 = (externalize_ksad_p$ksads_14_88_p == 1 | externalize_ksad_p$ksads_14_89_p == 1 |externalize_ksad_p$ksads_14_90_p == 1) *1
+summary(externalize_ksad_p[,c("temp_adhd_ex_10", "ksads_14_88_p", "ksads_14_89_p", "ksads_14_90_p")])
 
 #create summary for adhd symptoms excluding attention
 externalize_ksad_p$ksads_ADHD_exclude_attention_symptoms_sum = rowSums(externalize_ksad_p[,which(grepl("temp_adhd_ex_", colnames(externalize_ksad_p)))], na.rm = T)
 #fix rows with all NA (rowSums gave a number to all rows)
-externalize_ksad_p$ksads_ADHD_exclude_attention_symptoms_sum[rowSums(is.na(externalize_ksad_p[,which(grepl("temp_adhd_ex_", colnames(externalize_ksad_p), ignore.case=TRUE))])) == 11] = NA
+externalize_ksad_p$ksads_ADHD_exclude_attention_symptoms_sum[rowSums(is.na(externalize_ksad_p[,which(grepl("temp_adhd_ex_", colnames(externalize_ksad_p), ignore.case=TRUE))])) == 10] = NA
 # View(externalize_ksad_p[,which(grepl("adhd_ex", colnames(externalize_ksad_p), ignore.case=TRUE))])
 
 

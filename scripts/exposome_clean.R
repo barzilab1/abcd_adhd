@@ -65,11 +65,26 @@ ssmty = droplevels(ssmty)
 table(ssmty$stq_y_ss_weekend)
 
 
+
+###family relationship section
+acspsw03 = read.csv(file = paste0(exposome_files_path,"acspsw03.txt"), sep = '\t',header = TRUE, row.names=NULL, check.names=FALSE, na.string = c("","NA"))
+
+#remove details line
+acspsw03 = acspsw03[-1,]
+
+acspsw03 = acspsw03[acspsw03$eventname == "baseline_year_1_arm_1", grepl("^(src|interview|event|sex)|(rel_family_id)$", colnames(acspsw03))]
+
+acspsw03 = droplevels(acspsw03)
+summary(acspsw03)
+
+
+
 ### merge all tables
 
 exposome_set = merge(srpf01,sscey01)
 exposome_set = merge(exposome_set,pmq01)
 exposome_set = merge(exposome_set,ssmty)
+exposome_set = merge(exposome_set,acspsw03)
 
 write.csv(file = "outputs/exposome_set.csv",x = exposome_set, row.names = F, na = "")
 
