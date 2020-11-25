@@ -55,22 +55,27 @@ write.csv(file = "outputs/adhd_dataset_sui.csv",x = adhd_sub_set,row.names=F, na
 
 
 
+#creates bios!
 #remove rows with missing data only in the colunms that are part of the main analysis
-adhd_sub_set_clean = adhd_sub_set[complete.cases(adhd_sub_set[,c("sex_br","age","race_white","race_black","ethnicity_hisp", "parents_avg_edu",
-                                                    "any_adhd_med", "any_depression_psychotic_meds",
-                                                    "ksads_externalizing_exclude_attentation_symptoms_sum",
-                                                    "suicidality_y")]),]
+# adhd_sub_set_clean = adhd_sub_set[complete.cases(adhd_sub_set[,c("sex_br","age","race_white","race_black","ethnicity_hisp", "parents_avg_edu",
+#                                                     "any_adhd_med", "any_depression_psychotic_meds",
+#                                                     "ksads_externalizing_exclude_attentation_symptoms_sum",
+#                                                     "suicidality_y")]),]
 
 
-#select one participant from each familay 
-adhd_sub_set_clean = do.call(rbind, 
-                             lapply(split(adhd_sub_set_clean,adhd_sub_set_clean$rel_family_id),
+#select one participant from each family 
+set.seed(131)
+adhd_one_family_member = do.call(rbind, 
+                              lapply(split(adhd_sub_set,adhd_sub_set$rel_family_id),
                                     function(x){x[sample(nrow(x),1),]}))
 
-write.csv(file = "outputs/adhd_dataset_sui_family.csv",x = adhd_sub_set_clean, row.names=F, na = "")
+write.csv(file = "outputs/adhd_one_family_member.csv",x = adhd_one_family_member, row.names=F, na = "")
 
 
+#remove all families 
+adhd_no_family = adhd_sub_set[!(duplicated(adhd_sub_set$rel_family_id) | duplicated(adhd_sub_set$rel_family_id, fromLast=TRUE)), ]
+write.csv(file = "outputs/adhd_no_family.csv",x = adhd_no_family, row.names=F, na = "")
 
 
-
+                                                                 
 

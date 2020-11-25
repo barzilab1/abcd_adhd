@@ -12,14 +12,23 @@ srpf01 = srpf01[-1,]
 #rename visit as eventname
 srpf01$eventname = srpf01$visit
 
-#get 3 (out of 4) positive school involvement questions
-srpf01 = srpf01[srpf01$eventname == "baseline_year_1_arm_1", grepl("(src|interview|event|sex|4|6|_7)", colnames(srpf01))]
+#remove columns introduced by NDA and alienation items 
+srpf01 = srpf01[srpf01$eventname == "baseline_year_1_arm_1",  !(colnames(srpf01) %in% c("srpf01_id", "collection_id", "collection_title", "promoted_subjectkey", "subjectkey","study_cohort_name", "dataset_id","visit","school_15_y", "school_17_y"))]
 
 srpf01 = droplevels(srpf01)
 summary(srpf01)
 
-#sum the 3 questions
-srpf01$positive_school_involvement = apply(srpf01[,grepl("(4|6|7)", colnames(srpf01))], 1, function(r) sum(as.numeric(as.character(r))))
+
+#school_environment_sum
+srpf01$school_environment_sum = apply(srpf01[,grepl("(_2|4|5|6|7|10)", colnames(srpf01))], 1, function(r) sum(as.numeric(as.character(r))))
+
+#positive_school_involvement_sum
+srpf01$positive_school_involvement_sum = apply(srpf01[,grepl("(3|8|9|12)", colnames(srpf01))], 1, function(r) sum(as.numeric(as.character(r))))
+
+#school_protective_factors
+srpf01$school_protective_factors = srpf01$positive_school_involvement_sum + srpf01$school_environment_sum
+
+summary(srpf01)
 
 
 
