@@ -3,45 +3,29 @@ library(readr)
 source("config.R")
 
 
-###School Risk and Protective Factors
-srpf01 = read.csv(file = paste0(exposome_files_path,"srpf01.txt"), sep = '\t',header = TRUE, row.names=NULL, check.names=FALSE, na.string = c("","NA"))
 
-#remove details line
-srpf01 = srpf01[-1,]
-
-#rename visit as eventname
-srpf01$eventname = srpf01$visit
-
-#remove columns introduced by NDA and alienation items 
-srpf01 = srpf01[srpf01$eventname == "baseline_year_1_arm_1",  !(colnames(srpf01) %in% c("srpf01_id", "collection_id", "collection_title", "promoted_subjectkey", "subjectkey","study_cohort_name", "dataset_id","visit","school_15_y", "school_17_y"))]
-
-srpf01 = droplevels(srpf01)
-summary(srpf01)
-
-
-#school_environment_sum
-srpf01$school_environment_sum = apply(srpf01[,grepl("(_2|4|5|6|7|10)", colnames(srpf01))], 1, function(r) sum(as.numeric(as.character(r))))
-
-#positive_school_involvement_sum
-srpf01$positive_school_involvement_sum = apply(srpf01[,grepl("(3|8|9|12)", colnames(srpf01))], 1, function(r) sum(as.numeric(as.character(r))))
-
-#school_protective_factors
-srpf01$school_protective_factors = srpf01$positive_school_involvement_sum + srpf01$school_environment_sum
-
-summary(srpf01)
-
-
-
-###Family Environment Scale: Family Conflict Subscale
+###Family Environment Scale: Family Conflict Subscale & School Risk and Protective Factors
 sscey01 = read.csv(file = paste0(exposome_files_path,"abcd_sscey01.txt"), sep = '\t',header = TRUE, row.names=NULL, check.names=FALSE, na.string = c("","NA"))
 
 #remove details line
 sscey01 = sscey01[-1,]
 
-sscey01 = sscey01[sscey01$eventname == "baseline_year_1_arm_1", grepl("(src|interview|event|sex)|(fes_y_ss_fc)$", colnames(sscey01))]
-
+sscey01 = sscey01[sscey01$eventname == "baseline_year_1_arm_1", grepl("^(src|interview|event|sex|fes|srpf)", colnames(sscey01))]
 sscey01 = droplevels(sscey01)
-table(sscey01$fes_y_ss_fc)
+
+#remove nt (Number Total Questions) and nm (Number Missing Answers) and na (Number Answered)
+sscey01 = sscey01[,!grepl("_(nm|nt|na|pr|dfs)$",colnames(sscey01))]
+
+#rename
+sscey01$school_environment_sum = sscey01$srpf_y_ss_ses
+sscey01$positive_school_involvement_sum = sscey01$srpf_y_ss_iiss
+sscey01$school_protective_factors = as.numeric(as.character(sscey01$positive_school_involvement_sum)) + as.numeric(as.character(sscey01$school_environment_sum))
+
+
+sscey01 = sscey01[, !(colnames(sscey01) %in% c("srpf_y_ss_ses", "srpf_y_ss_iiss"))]
+
+
+summary(sscey01)
 
 
 
@@ -90,8 +74,7 @@ summary(acspsw03)
 
 ### merge all tables
 
-exposome_set = merge(srpf01,sscey01)
-exposome_set = merge(exposome_set,pmq01)
+exposome_set = merge(pmq01,sscey01)
 exposome_set = merge(exposome_set,ssmty)
 exposome_set = merge(exposome_set,acspsw03)
 
